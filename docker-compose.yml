@@ -1,0 +1,49 @@
+version: "3.9"
+services:
+
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: django_app
+    command: python manage.py runserver 0.0.0.0:${DJANGO_PORT}
+    ports:
+      - "${DJANGO_PORT}:${DJANGO_PORT}"
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+      - selenium
+    environment:
+      - DATABASE_NAME=${POSTGRES_DB}
+      - DATABASE_USER=${POSTGRES_USER}
+      - DATABASE_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  selenium:
+    image: selenium/standalone-chrome:latest
+    environment:
+      - VNC_NO_PASSWORD=${SELENIUM_VNC_NO_PASSWORD}
+      - OTEL_JAVAAGENT_ENABLED=${SELENIUM_OTEL_ENABLED}
+      - SE_ENABLE_TRACING=${SELENIUM_TRACING_ENABLED}
+    container_name: selenium
+    ports:
+      - "${SELENIUM_PORT}:4444"
+      - "${SELENIUM_VNC_PORT}:7900"
+    shm_size: "2g"  # Max memory size for browser
+
+volumes:
+  postgres_data:
