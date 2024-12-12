@@ -1,5 +1,3 @@
-# Sin título
-
 # **Technical Test Documentation for Athlos Booking Scraper**
 
 ## **Overview**
