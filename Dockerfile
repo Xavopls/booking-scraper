@@ -12,6 +12,11 @@ COPY . /app/
 
 # Expose port dynamically
 ARG DJANGO_PORT=8000
-ENV DJANGO_PORT=${DJANGO_PORT}
+ENV DJANGO_PORT=${DJANGO_PORT}.
 
+ENV DJANGO_SUPERUSER_USERNAME=xavi
+ENV DJANGO_SUPERUSER_EMAIL=admin@example.com
+ENV DJANGO_SUPERUSER_PASSWORD=1234
+
+CMD ["sh", "-c", "python manage.py createsuperuser --noinput --username ${DJANGO_SUPERUSER_USERNAME} --email ${DJANGO_SUPERUSER_EMAIL}"]
 CMD ["sh", "-c", "python manage.py runserver 0.0.0.0:${DJANGO_PORT}"]
