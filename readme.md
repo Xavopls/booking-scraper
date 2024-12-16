@@ -4,12 +4,12 @@ This application is built using Django 5.14 and designed to scrape data from var
 
 ## Table of Contents
 
-1. [Getting Started](https://www.notion.so/Django-Web-Scraper-Application-15ad6d13694a80778532cab1bda2ce48?pvs=21)
-2. [Running the Application](https://www.notion.so/Django-Web-Scraper-Application-15ad6d13694a80778532cab1bda2ce48?pvs=21)
-3. [Accessing Documentation](https://www.notion.so/Django-Web-Scraper-Application-15ad6d13694a80778532cab1bda2ce48?pvs=21)
-4. [Environment Variables](https://www.notion.so/Django-Web-Scraper-Application-15ad6d13694a80778532cab1bda2ce48?pvs=21)
-5. [Architecture Overview](https://www.notion.so/Django-Web-Scraper-Application-15ad6d13694a80778532cab1bda2ce48?pvs=21)
-6. [Authentication](https://www.notion.so/Django-Web-Scraper-Application-15ad6d13694a80778532cab1bda2ce48?pvs=21)
+1. Getting Started
+2. Running the Application
+3. Accessing Documentation
+4. Environment Variables
+5. Architecture Overview
+6. Authentication
 
 ---
 
