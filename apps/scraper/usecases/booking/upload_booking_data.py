@@ -1,4 +1,5 @@
 # services.py (or any other appropriate location for your service classes)
+from apps.core.models import Booking
 from apps.core.serializers.booking_serializer import BookingSerializer
 import logging
 
@@ -7,8 +8,7 @@ logger = logging.getLogger(__name__)
 class UploadBookingData:
     def invoke(self, booking_data: BookingSerializer):
         try:
-            booking = booking_data.to_domain()
-            booking.save()
+            booking_data.save()
             return True
         except Exception as e:
             # Catch any other exceptions that might occur

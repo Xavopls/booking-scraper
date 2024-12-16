@@ -1,207 +1,125 @@
-# **Technical Test Documentation for Athlos Booking Scraper**
+# Django Web Scraper Application
 
-## **Overview**
+This application is built using Django 5.14 and designed to scrape data from various websites. It is containerized with Docker and includes a scraping service powered by Selenium and Chrome in headless mode, as well as a PostgreSQL database. This guide will walk you through how to run the application locally or via Docker and how to access the different features it provides.
 
-This project is a **Booking Scraper** built with Django, which allows users to retrieve hotel data by scraping information from a specified hotel. The application exposes two main endpoints:
+## Table of Contents
 
-1. An authentication endpoint that returns a bearer token.
-2. A hotel scraping endpoint that fetches hotel data based on the provided hotel name.
-
-The application is packaged using **Docker** to streamline deployment and testing. You can run the application in a local environment or via Docker containers.
-
----
-
-## **Prerequisites**
-
-Before running the project, ensure that the following prerequisites are met:
-
-- **Docker** and **Docker Compose** installed on your system.
-- **Python 3.11** (or higher) installed locally if running outside of Docker.
-- **Django 5.1.4** (or compatible) for local testing.
-- The `.env` file configured with the appropriate environment variables.
+1. [Getting Started](https://www.notion.so/Django-Web-Scraper-Application-15ad6d13694a80778532cab1bda2ce48?pvs=21)
+2. [Running the Application](https://www.notion.so/Django-Web-Scraper-Application-15ad6d13694a80778532cab1bda2ce48?pvs=21)
+3. [Accessing Documentation](https://www.notion.so/Django-Web-Scraper-Application-15ad6d13694a80778532cab1bda2ce48?pvs=21)
+4. [Environment Variables](https://www.notion.so/Django-Web-Scraper-Application-15ad6d13694a80778532cab1bda2ce48?pvs=21)
+5. [Architecture Overview](https://www.notion.so/Django-Web-Scraper-Application-15ad6d13694a80778532cab1bda2ce48?pvs=21)
+6. [Authentication](https://www.notion.so/Django-Web-Scraper-Application-15ad6d13694a80778532cab1bda2ce48?pvs=21)
 
 ---
 
-## **Endpoints**
+## Getting Started
 
-### 1. **Authentication Endpoint**
+### Prerequisites
 
-- **URL**: `http://localhost:8000/api/token/`
-- **Method**: `POST`
-- **Description**: Authenticates the user and returns a JWT bearer token to be used for subsequent requests.
-
-### Request:
-
-- **Headers**:
-    - Content-Type: application/json
-- **Body**: (Example)
-    
-    ```json
-    
-    {
-      "username": "your-username",
-      "password": "your-password"
-    }
-    
-    ```
-    
-
-### Response:
-
-- **Status**: 200 OK
-- **Body**:
-    
-    ```json
-    
-    {
-      "access": "your-jwt-access-token",
-      "refresh": "your-jwt-refresh-token"
-    }
-    
-    ```
-    
-
-### 2. **Hotel Scraping Endpoint**
-
-- **URL**: `http://localhost:8000/api/hotels/scrape?name=Hotel%20California`
-- **Method**: `GET`
-- **Description**: Fetches the hotel data for the provided hotel name.
-
-### Request:
-
-- **Headers**:
-    - Authorization: Bearer `{access_token}`
-- **Query Parameters**:
-    - `name`: The name of the hotel (e.g., "Hotel California").
-
-### Response:
-
-- **Status**: 200 OK
-- **Body**:
-    
-    ```json
-    {
-      "name": "Hotel California",
-      "location": "Santa Monica, California",
-      "average_price": 250.00,
-      "description": "A beautiful hotel with breathtaking views.",
-      "review_mark": 8.5,
-      "number_of_comments": 1000,
-      "photo_urls": [
-        "https://cf.bstatic.com/xdata/images/hotel/square240/70484675.webp"
-      ],
-      "amenities": ["Pool", "Gym", "Wi-Fi"]
-    }
-    ```
-    
+- Python 3.11
+- Docker (for Selenium and PostgreSQL setup)
 
 ---
 
-## **Docker Setup**
+## Running the Application
 
-### 1. **Building the Docker Container**
+### Docker Setup
 
-To set up the project using Docker, you will need to build the container and run it using Docker Compose. This will start the application in a containerized environment with all necessary dependencies.
-
-### Steps to build the Docker container:
-
-1. **Clone the repository (if not already done)**:
-    
-    ```bash
-    git clone https://your-repository-url.git
-    cd athlos_tech_test
-    ```
-    
-2. **Set up the `.env` file**:
-    - Copy `.env.example` to `.env` and set the environment variables accordingly. These variables are used for database configuration, Django settings, and other environment-specific configurations.
-3. **Build the Docker image**:
-    
-    ```bash
-    docker build -t athlos_tech_test .
-    ```
-    
-4. **Run the Docker containers**:
-    
-    ```bash
-    docker-compose up -d
-    ```
-    
-
-This will start the containers in the background and set up the application, database, and other necessary services.
-
-### 2. **Docker and Environment Configuration**
-
-- **Local Development**: By default, the Docker setup assumes that services (like the database) are hosted on the `localhost`.
-- **Dockerized Environment**: If you are running the setup with Docker containers, you need to modify the `.env` file to point to the Docker containers instead of `localhost`.
-    - Change any URLs or service hostnames that point to local services to refer to the corresponding Docker service names.
-
-Example:
+To run the application using Docker, simply run:
 
 ```bash
-bash
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
+docker-compose build
+docker-compose up -d
 ```
 
----
+This will set up the necessary containers, including the database (PostgreSQL) and Selenium with Chrome in headless mode.
 
-## **Environment Variables (.env)**
+### Local Setup
 
-The `.env` file contains the necessary environment variables for configuring the application. Here is an example of what the `.env` file might look like:
+To run the application locally:
+
+1. Clone the repository to your local machine.
+2. Ensure you have Python 3.11 installed.
+3. Ensure Docker is installed and running for Selenium and PostgreSQL containers.
+4. Copy the local environment configuration:
 
 ```bash
-bash
-Copiar código
-# Database Configuration
-POSTGRES_DB=athlosscraper_db
-POSTGRES_USER=your-db-user
-POSTGRES_PASSWORD=your-db-password
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-
-# Django settings
-DEBUG=True
-SECRET_KEY=your-secret-key
-
-# JWT Authentication settings
-ACCESS_TOKEN_LIFETIME=60
-SLIDING_TOKEN_LIFETIME=30
-SLIDING_TOKEN_REFRESH_LIFETIME=1
-
+cp .env_local .env
 ```
 
-Make sure to replace the placeholders with your actual values. When using Docker, modify the `POSTGRES_HOST` and other environment settings to match the Docker container configuration.
+The `.env` file contains the necessary configuration for Docker.
 
 ---
 
-## **Running the Application Locally**
+## Accessing Documentation
 
-If you want to run the application without Docker, you can do so by setting up your environment locally with the following steps:
+Once the application is running, you can access the following API documentation:
 
-1. **Set up a virtual environment**:
-    
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate  # For Linux/macOS
-    venv\Scripts\activate  # For Windows
-    ```
-    
-2. **Install dependencies**:
-    
-    ```bash
-    pip install -r requirements.txt
-    ```
-    
-3. **Run migrations**:
-    
-    ```bash
-    python manage.py migrate
-    ```
-    
-4. **Start the development server**:
-    
-    ```bash
-    python manage.py runserver
-    ```
-    
-    The application will be available at `http://localhost:8000`.
+- **Swagger UI**: Navigate to localhost:8000/api/swagger-ui/
+- **Redoc UI** (Alternative docs view): Navigate to localhost:8000/api/redoc/
+
+The default path for the application is [localhost:8000](http://localhost:8000/).
+
+---
+
+## Environment Variables
+
+You can modify the application’s behavior by changing the values in the `.env` file. These environment variables include settings for database connections, scraping configurations, and authentication.
+
+---
+
+## Architecture Overview
+
+### Django Apps
+
+The project is structured into two main apps:
+
+1. **Core**:
+    - Contains shared logic between apps.
+    - Stores exceptions.
+    - Holds normalized models.
+2. **Scraper**:
+    - Contains all scraping logic.
+    - Manages the controllers that interact with the external websites.
+
+### Use Cases and Services
+
+- The **usecases** folder contains site-specific logic for scraping different websites (e.g., `booking.com`).
+- The **services** folder contains the business logic, with each service dedicated to a specific site (e.g., a service for scraping booking.com).
+
+### Models
+
+The main models in the application are:
+
+- **Booking**: Represents a booking entry.
+- **Amenities**: Represents the amenities available for a booking.
+
+These models have a many-to-many relationship, which is represented by an intermediary table linking `Booking` and `Amenities`.
+
+---
+
+## Authentication
+
+### Bearer Token Authentication
+
+All endpoints require authentication via a Bearer token.
+
+- To obtain a token, use the login endpoint available in the Swagger UI.
+- The default credentials are:
+    - **Username**: admin
+    - **Password**: 1234
+
+---
+
+## Troubleshooting
+
+If you encounter issues or errors during setup, consider the following:
+
+- Ensure your `.env` is correctly configured.
+- Check Docker containers are running if using Docker.
+- Review logs for any errors with the scraping service or database connection.
+
+---
+
+This README should help you get up and running with the application. If you have further questions or issues, feel free to reach out!

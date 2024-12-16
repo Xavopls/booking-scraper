@@ -3,32 +3,29 @@
 from rest_framework import serializers
 from apps.core.models.booking import Booking
 
-
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
+        fields = [
+            'id',
+            'name',
+            'location',
+            'average_price',
+            'description',
+            'review_mark',
+            'number_of_comments',
+            'photo_urls',
+            'amenities',
+        ]
 
-        fields = ['id',
-                  'name',
-                  'location',
-                  'average_price',
-                  'description',
-                  'review_mark',
-                  'number_of_comments',
-                  'photo_urls',
-                  'amenities']
+    def create(self, validated_data):
+        # Extract amenities from validated_data
+        amenities = validated_data.pop('amenities', [])
 
-    def to_domain(self):
-        booking = Booking.objects.create(
-            id=self.context['id'],
-            name=self.context['name'],
-            location=self.context['location'],
-            average_price=self.context['average_price'],
-            description=self.context['description'],
-            review_mark=self.context['review_mark'],
-            number_of_comments=self.context['number_of_comments'],
-            photo_urls=self.context['photo_urls'],
-            amenities=self.context['amenities']
-        )
+        # Create Booking instance
+        booking = Booking.objects.create(**validated_data)
+
+        # Set many-to-many relationships
+        booking.amenities.set(amenities)
 
         return booking

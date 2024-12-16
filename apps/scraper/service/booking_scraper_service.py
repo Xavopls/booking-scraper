@@ -1,7 +1,8 @@
 from selenium.webdriver.common.by import By
 from typing import Optional
 from selenium.webdriver.remote.webdriver import WebDriver
-from apps.core.models.booking import Booking
+
+from apps.scraper.usecases.booking.upload_booking_data import logger
 
 
 class BookingScraperService:
@@ -15,7 +16,12 @@ class BookingScraperService:
 
     def _stop(self):
         if self.driver:
-            self.selenium_service.stop_selenium(self.driver)
+            try:
+                self.selenium_service.stop_selenium()
+            except Exception as stop_error:
+                print(f"Error during stopping Selenium: {stop_error}")
+            finally:
+                self.driver = None
 
     def _scrape_booking_hotel(self):
         try:
@@ -27,8 +33,9 @@ class BookingScraperService:
                 return False
         except Exception as e:
             print(f"Error scraping hotel data: {e}")
-
             return False
+        finally:
+            self._stop()
 
     def _handle_hotel(self, hotel):
         """Extract and handle specific hotel details."""
@@ -58,14 +65,13 @@ class BookingScraperService:
             comment_amount = 0
 
         # Photo URLs (handle case when they're not available)
-        photo_urls = []
         try:
+            photo_urls = []
             photo_element = hotel.find_element(By.CSS_SELECTOR, 'img[data-testid="image"]')
             photo_url = photo_element.get_attribute('src')
             photo_urls.append(photo_url)
         except:
-            pass
-
+            logger.error("Error retrieving imgs")
         # Description (handle case when it's not available)
         try:
             description = hotel.find_element(By.CSS_SELECTOR, "div.abf093bdfe:not(.ecc6a9ed89)").text
@@ -76,7 +82,7 @@ class BookingScraperService:
         average_price = 0.0
 
         # Return the extracted data as a Booking
-        return {
+        booking = {
             "name": name,
             "location": location,
             "average_price": average_price,
@@ -86,3 +92,5 @@ class BookingScraperService:
             "photo_urls": photo_urls,
             "amenities": []
         }
+
+        return booking

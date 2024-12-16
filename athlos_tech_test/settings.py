@@ -129,7 +129,7 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Hotel Scraping APIO',
+    'TITLE': 'Hotel Scraping API',
     'DESCRIPTION': 'This is a technical test for Athlos',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,

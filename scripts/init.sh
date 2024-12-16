@@ -1,7 +1,11 @@
 #!/bin/sh
 
-python manage.py makemigrations --noinput
-python manage.py migrate --noinput
+python manage.py makemigrations
+python manage.py makemigrations core
+python manage.py makemigrations scraper
+python manage.py migrate
+python manage.py migrate core
+python manage.py migrate scraper
 
 # Create superuser if it doesn't exist
 echo "from django.contrib.auth import get_user_model; \

@@ -52,7 +52,10 @@ class SeleniumService:
         """
         if self.driver:
             try:
+                self.driver.close()
                 self.driver.quit()
             except Exception as e:
                 print(f"Error stopping Selenium: {e}")
                 raise
+            finally:
+                self.driver = None

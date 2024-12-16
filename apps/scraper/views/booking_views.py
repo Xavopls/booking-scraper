@@ -1,12 +1,16 @@
+from django.http import Http404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
+
+from apps.scraper.usecases.booking.get_all_booking_data import GetAllBookingData
 from apps.scraper.usecases.booking.get_booking_data import GetBookingData
 from apps.core.serializers.booking_serializer import BookingSerializer
 from rest_framework.views import APIView
 
+from apps.scraper.usecases.booking.get_booking_data_by_id import GetBookingDataById
 from apps.scraper.usecases.booking.upload_booking_data import UploadBookingData
 
 
@@ -37,37 +41,56 @@ class BookingView(APIView):
 
 
 # POST /api/hotels/
-class CreateHotelView(CreateAPIView):
+class HotelView(CreateAPIView):
+    @extend_schema(
+        responses=BookingSerializer,
+    )
+    def get(self, request):
+        try:
+            get_all_booking_data = GetAllBookingData()
+            bookings = get_all_booking_data.invoke()
+            if not bookings:
+                return Response({"message": "Booking not found."},
+                                status=status.HTTP_404_NOT_FOUND)
+
+            serializer = BookingSerializer(bookings, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({"message": "Failed to retrieve bookings."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     @extend_schema(
         request=BookingSerializer
     )
     def post(self, request):
-        # Initialize the serializer with the request data
         serializer = BookingSerializer(data=request.data)
 
         if serializer.is_valid():
-            # Extract the validated data
-            booking_data = serializer.validated_data
-
-            # Create an instance of UploadBookingData and call invoke
             upload_service = UploadBookingData()
-            success = upload_service.invoke(booking_data)
+            success = upload_service.invoke(serializer)
 
             if success:
                 return Response({"message": "Booking uploaded successfully."}, status=status.HTTP_200_OK)
             else:
                 return Response({"message": "Failed to upload booking."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            print(serializer.errors)  # Or use logging
+            return Response({"message": "Validation failed", "errors": serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+#
+class HotelByIdView(ListAPIView):
+    @extend_schema(
+        responses=BookingSerializer,
+    )
+    def get(self, request, booking_id):
+        try:
+            get_booking_data_by_id = GetBookingDataById()
+            booking = get_booking_data_by_id.invoke(booking_id)
+            if not booking:
+                return Response({"message": f"Booking with ID {booking_id} not found."},
+                                status=status.HTTP_404_NOT_FOUND)
 
+            serializer = BookingSerializer(booking)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
-#
-#
-# # GET /api/hotels/
-# class ListHotelsView(generics.ListAPIView):
-#     serializer_class = BookingSerializer
-#     queryset = Booking.objects.all()
-#
-#
-# # GET /api/hotels/{id}/
-# class RetrieveHotelView(generics.RetrieveAPIView):
-#     serializer_class = BookingSerializer
-#     queryset = Booking.objects.all()
+        except:
+            return Response({"message": "Failed to retrieve bookings."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
