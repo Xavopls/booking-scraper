@@ -1,5 +1,5 @@
 """
-URL configuration for athlosscraper project.
+URL configuration for athlos_tech_test project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
@@ -16,16 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from bookingscraper.views import ScrapeHotelsView, CreateHotelView, ListHotelsView, RetrieveHotelView
+from django.urls.conf import include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/hotels/scrape', ScrapeHotelsView.as_view(), name='scrape-hotels'),
-    path('api/hotels/', CreateHotelView.as_view(), name='create-hotel'),
-    path('api/hotels/all', ListHotelsView.as_view(), name='list-hotels'),
-    path('api/hotels/<int:pk>/', RetrieveHotelView.as_view(), name='retrieve-hotel'),
 
+    path('admin/', admin.site.urls),
+    path('hotels/', include('apps.scraper.urls')),
+
+    # YOUR PATTERNS
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    # Optional UI:
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

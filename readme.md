@@ -111,7 +111,7 @@ To set up the project using Docker, you will need to build the container and run
     
     ```bash
     git clone https://your-repository-url.git
-    cd athlosscraper
+    cd athlos_tech_test
     ```
     
 2. **Set up the `.env` file**:
@@ -119,7 +119,7 @@ To set up the project using Docker, you will need to build the container and run
 3. **Build the Docker image**:
     
     ```bash
-    docker build -t athlosscraper .
+    docker build -t athlos_tech_test .
     ```
     
 4. **Run the Docker containers**:
