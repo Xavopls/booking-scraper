@@ -12,7 +12,7 @@ COPY . /app/
 
 # Expose port dynamically
 ARG DJANGO_PORT=8000
-ENV DJANGO_PORT=${DJANGO_PORT}
+ENV DJANGO_PORT=${DJANGO_PORT}.
 
 # Environment variables for superuser creation
 ENV DJANGO_SUPERUSER_USERNAME=admin
