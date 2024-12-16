@@ -1,5 +1,4 @@
 #!/bin/sh
-
 python manage.py makemigrations
 python manage.py makemigrations core
 python manage.py makemigrations scraper
