@@ -6,10 +6,6 @@ __pycache__/
 # C extensions
 *.so
 
-*.sh text eol=lf
-*.yml text eol=lf
-*.yaml text eol=lf
-
 # Distribution / packaging
 .Python
 build/
